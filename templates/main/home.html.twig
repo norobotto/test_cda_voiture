@@ -4,16 +4,41 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
-	<div class="card text-center" style="width: 18rem; display:flex; ">
-		{% for annonce in annonces %}
-			<img class="card-img-top" src="/assets/img/ford_mustang.jpg" alt="Card image cap">
-			<div class="card-body">
-				<h5 class="card-title">{{annonce.title}}</h5>
-				<p class="card-text">{{annonce.description}}</p>
-				<a href="#" class="btn btn-primary">Go somewhere</a>
-			</div>
-		{% endfor %}
+<h1 class="title text-center mt-4">Trouvez la voiture de vos rêves</h1>
+	<table class="table container">
+		<tbody>
+			{% for marque in marques %}
+				<tr>
+					<td><a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a></td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="cards-container">
+		<div class="cards">
+			{% for annonce in annonces %}
+				<div class="card" style="width: 18rem;">
+					<img class="card-img-top" src="{{asset('images_directory/' ~ annonce.imgfile )}}" alt="Card image cap">
+					<div class="card-body">
+						<h5 class="card-title">
+							{{annonce.marque.name}}
+						</h5>
+						<div class="card-text">
+							{{annonce.description|raw}}
+						</div>
+						<a href="{{ path('app_annonce_show', {'id': annonce.id}) }}" class="btn btn-success">Voir l'annonce</a>
+					</div>
+				</div>
+			{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+			{% endfor %}
+		</div>
 	</div>
-</div>
 {% endblock %}
