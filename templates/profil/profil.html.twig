@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil
+{% endblock %}
+
+{% block body %}
+	<div class="container"></div>
+	<h1 class="title text-center mt-4">Les annonces de :
+		{{app.user.username}}
+	</h1>
+
+	{% if app.user %}
+		<table class="table container">
+			<tbody>
+				{% for annonce in annonces %}
+					<tr>
+						<td>
+							{{ annonce.title }}
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="3">no records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+
+  <div class="cards-container">
+    <div class="cards">
+      {% for annonce in annonces %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{asset('images_directory/' ~ annonce.imgfile )}}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{annonce.title}}
+            </h5>
+            <p class="card-text">
+              {{annonce.description|raw}}
+            </p>
+            <a href="{{ path('app_annonce_show', {'id': annonce.id}) }}" class="btn btn-success d-flex align-items-center">Voir en détail</a>
+          </div>
+        </div>
+      {% else %}
+        <tr>
+          <td colspan="3">no records found</td>
+        </tr>
+      {% endfor %}
+    </div>
+  </div>
+
+
+{% endblock %}

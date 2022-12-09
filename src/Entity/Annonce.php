@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AnnonceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,6 +51,14 @@ class Annonce
 
     #[ORM\ManyToOne(inversedBy: 'annonces')]
     private ?User $author = null;
+
+    #[ORM\OneToMany(mappedBy: 'usersfav', targetEntity: Favourite::class)]
+    private Collection $favourites;
+
+    public function __construct()
+    {
+        $this->favourites = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -164,7 +174,7 @@ class Annonce
         return $this;
     }
 
-    public function isIsVisible(): ?bool
+    public function getisVisible(): ?bool
     {
         return $this->is_visible;
     }
@@ -198,5 +208,48 @@ class Annonce
         $this->author = $author;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Favourite>
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourite $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites->add($favourite);
+            $favourite->setUsersfav($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourite $favourite): self
+    {
+        if ($this->favourites->removeElement($favourite)) {
+            // set the owning side to null (unless already changed)
+            if ($favourite->getUsersfav() === $this) {
+                $favourite->setUsersfav(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return boolean
+     */
+    public function isUserfav(User $user): bool
+    {
+        foreach($this->favourites as $favourites){
+            if($favourites->getUser() === $user)
+            return true;
+        }
+        return false;
     }
 }

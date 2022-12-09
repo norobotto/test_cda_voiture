@@ -4,12 +4,14 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="title text-center mt-4">Trouvez la voiture de vos rêves</h1>
+	<h1 class="title text-center mt-4">Trouvez la voiture de vos rêves</h1>
 	<table class="table container">
 		<tbody>
 			{% for marque in marques %}
 				<tr>
-					<td><a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a></td>
+					<td>
+						<a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a>
+					</td>
 				</tr>
 			{% else %}
 				<tr>
@@ -18,6 +20,19 @@
 			{% endfor %}
 		</tbody>
 	</table>
+
+	{% if app.user %}
+		<div class="text-center mt-4 m">
+			<a href="{{ path('app_annonce_new') }}" class="btn btn-success">Ajouter une nouvelle annonce</a>
+		</div>
+	{% endif %}
+
+	{% if is_granted('ROLE_ADMIN') %}
+		<div class="text-center mt-3">
+			<a class="btn btn-warning" href="{{ path('app_annonce_index')}}">Liste des annonces</a>
+			<a class="btn btn-warning" href="{{ path('app_marque_index')}}">Liste des marques</a>
+		</div>
+	{% endif %}
 
 	<div class="cards-container">
 		<div class="cards">
@@ -28,7 +43,7 @@
 						<h5 class="card-title">
 							{{annonce.marque.name}}
 						</h5>
-						<div class="card-text">
+						<div class="card-text my-2">
 							{{annonce.description|raw}}
 						</div>
 						<a href="{{ path('app_annonce_show', {'id': annonce.id}) }}" class="btn btn-success">Voir l'annonce</a>

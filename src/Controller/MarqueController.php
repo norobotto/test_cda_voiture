@@ -48,6 +48,7 @@ class MarqueController extends AbstractController
         ]);
     }
 
+
     #[Route('/{id}/edit', name: 'app_marque_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Marque $marque, MarqueRepository $marqueRepository): Response
     {

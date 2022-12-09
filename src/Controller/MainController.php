@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Annonce;
 use App\Entity\Marque;
 use App\Repository\AnnonceRepository;
 use App\Repository\MarqueRepository;
@@ -16,8 +15,9 @@ class MainController extends AbstractController
     public function index(AnnonceRepository $annonceRepository, MarqueRepository $marqueRepository): Response
     {
         return $this->render('main/home.html.twig', [
-            'controller_name' => 'MainController',
-            'annonces' => $annonceRepository->findAll(),
+            'annonces' => $annonceRepository->findBy([
+                'is_visible' => true
+            ]),
             'marques' => $marqueRepository->findAll(),
         ]);
     }
