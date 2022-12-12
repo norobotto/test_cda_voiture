@@ -31,3 +31,7 @@ img{
     object-fit: contain !important;
     height: 300px !important;
 }
+
+.fa-heart{
+    color: red;
+}

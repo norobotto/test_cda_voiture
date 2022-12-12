@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Annonce;
-use App\Entity\Favourite;
+use App\Entity\AnnonceListByUser;
 use App\Form\AnnonceType;
+use App\Repository\AnnonceListByUserRepository;
 use App\Repository\AnnonceRepository;
-use App\Repository\FavouriteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -145,28 +145,27 @@ class AnnonceController extends AbstractController
         return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/fav', 'app_annonce_fav', methods: ['GET', 'POST'])]
-    public function favUserAnnonce(Annonce $annonce, FavouriteRepository $favouriteRepository)
+    #[Route('/{id}/fav', name: 'app_annonce_fav', methods: ['POST', 'GET'])]
+    public function favUserAnnonce(Annonce $annonce, AnnonceListByUserRepository $annonceByUserRepo)
     {
-        $user = $this->getUser();
+        $user = $this->getUser(); // Cherche le user connecté et le stock dans la variable
         if(!$user) return $this->redirectToRoute('app_login');
 
-        if($annonce->isUserfav($user)){
-            $signeUp = $favouriteRepository->findOneBy([
+        if($annonce->isUserfav($user)){  // si l'annonce de la fonction isUserfav() de $user (trouvé précédement)
+            $signedUp = $annonceByUserRepo->findOneBy([ // alors dans les données du repo mettre dans le signeUp
                 'annonces' => $annonce,
                 'users' => $user
             ]);
-            $favouriteRepository->remove($signeUp);
-            $this->addFlash('Erreur', 'Cette annonce n\'est plus dans vos favoris');
-
+            $annonceByUserRepo->remove($signedUp); // "Décocher" le favori
+            $this->addFlash('Erreur', "Cette annonce n'est plus dans vos favoris");
             return $this->redirectToRoute('home');
         }
-        $newFav = new Favourite();
-        $newFav->setAnnonceFav($annonce)->setUsersfav($user);
 
-        $favouriteRepository->save($newFav);
-        $this->addFlash('Succès', 'Cette annonce est désormais dans vos favoris');
-        
+        $newFav = new AnnonceListByUser(); // Sinon créer un nouveau favori dans $newFav
+        $newFav->setAnnonces($annonce)->setUsers($user); 
+
+        $annonceByUserRepo->save($newFav);
+        $this->addFlash('Succès', "Cette annonce est désormais dans vos favoris");
         return $this->redirectToRoute('home');
     }
 }

@@ -6,19 +6,21 @@
 	<div class="container">
 		<h1 class="title text-center mt-4">Annonces pour la marque :
 			{{marq.name}}</h1>
-      <table class="table">
-        <tbody>
-          {% for marque in marques %}
-            <tr>
-              <td><a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a></td>
-            </tr>
-          {% else %}
-            <tr>
-              <td colspan="3">no records found</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+		<table class="table">
+			<tbody>
+				{% for marque in marques %}
+					<tr>
+						<td>
+							<a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="3">no records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		<div class="cards-container">
 			<div class="cards">
 				{% for annonce in marq.annonces %}
@@ -32,6 +34,17 @@
 								{{annonce.description|raw}}
 							</p>
 							<a href="{{ path('app_annonce_show', {'id': annonce.id}) }}" class="btn btn-success d-flex align-items-center">Voir en détail</a>
+							{% if app.user %}
+								{% if annonce.isUserfav(app.user) %}
+									<a href="{{ path('app_annonce_fav', {'id': annonce.id}) }}">
+										<i class="fa-solid fa-heart"></i>
+									</a>
+								{% else %}
+									<a href="{{ path('app_annonce_fav', {'id': annonce.id}) }}">
+										<i class="fa-regular fa-heart"></i>
+									</a>
+								{% endif %}
+							{% endif %}
 						</div>
 					</div>
 				{% else %}

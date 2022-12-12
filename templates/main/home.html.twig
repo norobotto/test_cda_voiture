@@ -10,7 +10,7 @@
 			{% for marque in marques %}
 				<tr>
 					<td>
-						<a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a>
+						{# <a href="{{ path('card', {'id':marque.id}) }}" class="link-dark">{{ marque.name }}</a> #}
 					</td>
 				</tr>
 			{% else %}
@@ -41,7 +41,7 @@
 					<img class="card-img-top" src="{{asset('images_directory/' ~ annonce.imgfile )}}" alt="Card image cap">
 					<div class="card-body">
 						<h5 class="card-title">
-							{{annonce.marque.name}}
+							{# {{annonce.marque.name}} #}
 						</h5>
 						<div class="card-text my-2">
 							{{annonce.description|raw}}

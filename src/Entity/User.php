@@ -34,13 +34,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Annonce::class)]
     private Collection $annonces;
 
-    #[ORM\OneToMany(mappedBy: 'annonceFav', targetEntity: Favourite::class)]
-    private Collection $favourites;
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: AnnonceListByUser::class)]
+    private Collection $annonceFav;
 
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
-        $this->favourites = new ArrayCollection();
+        $this->annonceFav = new ArrayCollection();
     }
 
     public function __toString()  
@@ -149,32 +149,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Favourite>
+     * @return Collection<int, AnnonceListByUser>
      */
-    public function getFavourites(): Collection
+    public function getAnnonceFav(): Collection
     {
-        return $this->favourites;
+        return $this->annonceFav;
     }
 
-    public function addFavourite(Favourite $favourite): self
+    public function addAnnonceFav(AnnonceListByUser $annonceFav): self
     {
-        if (!$this->favourites->contains($favourite)) {
-            $this->favourites->add($favourite);
-            $favourite->setAnnonceFav($this);
+        if (!$this->annonceFav->contains($annonceFav)) {
+            $this->annonceFav->add($annonceFav);
+            $annonceFav->setUsers($this);
         }
 
         return $this;
     }
 
-    public function removeFavourite(Favourite $favourite): self
+    public function removeAnnonceFav(AnnonceListByUser $annonceFav): self
     {
-        if ($this->favourites->removeElement($favourite)) {
+        if ($this->annonceFav->removeElement($annonceFav)) {
             // set the owning side to null (unless already changed)
-            if ($favourite->getAnnonceFav() === $this) {
-                $favourite->setAnnonceFav(null);
+            if ($annonceFav->getUsers() === $this) {
+                $annonceFav->setUsers(null);
             }
         }
 
         return $this;
     }
+
 }

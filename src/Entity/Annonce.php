@@ -52,15 +52,14 @@ class Annonce
     #[ORM\ManyToOne(inversedBy: 'annonces')]
     private ?User $author = null;
 
-    #[ORM\OneToMany(mappedBy: 'usersfav', targetEntity: Favourite::class)]
-    private Collection $favourites;
+    #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: AnnonceListByUser::class)]
+    private Collection $usersFav;
 
     public function __construct()
     {
-        $this->favourites = new ArrayCollection();
+        $this->usersFav = new ArrayCollection();
     }
-
-
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -211,29 +210,29 @@ class Annonce
     }
 
     /**
-     * @return Collection<int, Favourite>
+     * @return Collection<int, AnnonceListByUser>
      */
-    public function getFavourites(): Collection
+    public function getUsersFav(): Collection
     {
-        return $this->favourites;
+        return $this->usersFav;
     }
 
-    public function addFavourite(Favourite $favourite): self
+    public function addUsersFav(AnnonceListByUser $usersFav): self
     {
-        if (!$this->favourites->contains($favourite)) {
-            $this->favourites->add($favourite);
-            $favourite->setUsersfav($this);
+        if (!$this->usersFav->contains($usersFav)) {
+            $this->usersFav->add($usersFav);
+            $usersFav->setAnnonces($this);
         }
 
         return $this;
     }
 
-    public function removeFavourite(Favourite $favourite): self
+    public function removeUsersFav(AnnonceListByUser $usersFav): self
     {
-        if ($this->favourites->removeElement($favourite)) {
+        if ($this->usersFav->removeElement($usersFav)) {
             // set the owning side to null (unless already changed)
-            if ($favourite->getUsersfav() === $this) {
-                $favourite->setUsersfav(null);
+            if ($usersFav->getAnnonces() === $this) {
+                $usersFav->setAnnonces(null);
             }
         }
 
@@ -244,12 +243,12 @@ class Annonce
      * @param User $user
      * @return boolean
      */
-    public function isUserfav(User $user): bool
+    public function isUserfav(User $user) : bool 
     {
-        foreach($this->favourites as $favourites){
-            if($favourites->getUser() === $user)
-            return true;
+        foreach($this->usersFav as $usersFav){
+            if($usersFav->getUsers() === $user) return true;
         }
         return false;
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AnnonceListByUserRepository;
 use App\Repository\AnnonceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,15 +13,16 @@ class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(AnnonceRepository $annonceRepository): Response
+    public function index(AnnonceRepository $annonceRepository, AnnonceListByUserRepository $annonceByUserRepo): Response
     {
         $author = $this->getUser();
-
         return $this->render('profil/profil.html.twig', [
             'annonces' => $annonceRepository->findBy([
                 'author' => $author,
             ]),
-            
+            'annoncesFav' => $annonceByUserRepo->findBy([
+                'users' => $author
+            ]),
         ]);
     }
 }
